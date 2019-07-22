@@ -4,9 +4,10 @@ type SelectionSort struct {
 	CommonSortBase
 }
 
-//交换次数固定 n-1
-//比较次数固定 1+2+...+n = n*(n+1)/2
 //不受待排元素影响
+//最好情况 比较：1+2+...+n = n*(n+1)/2  交换：n-1
+//最坏情况 比较：1+2+...+n = n*(n+1)/2  交换：n-1
+//不稳定  eg: 5 8 5 2 9
 func (ss *SelectionSort) Sort(l []Comparable) []Comparable {
 	for i := 0; i < len(l)-1; i++ {
 		min := l[i]

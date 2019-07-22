@@ -13,7 +13,7 @@ var (
 	nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	//nums = []int{10,9,8,7,6,5,4,3,2,1}
 
-	shuffle = false
+	shuffle = true
 )
 
 func sortNums() {
@@ -37,7 +37,7 @@ func sortNums() {
 	sorter.EndCount()
 
 	comp, exch := sorter.GetCount()
-	fmt.Printf("compare : %d\texch : %d\n", comp, exch)
+	fmt.Printf("compare : %d\texchange : %d\n", comp, exch)
 }
 
 func main() {
