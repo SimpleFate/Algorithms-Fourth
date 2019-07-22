@@ -5,17 +5,41 @@ import (
 	"fmt"
 )
 
+var (
+	//sorter = &ch2.SelectionSort{}
+	//sorter = &ch2.InsertionSort{}
+	sorter = &ch2.Bubble{}
+
+	nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	//nums = []int{10,9,8,7,6,5,4,3,2,1}
+
+	shuffle = false
+)
+
+func sortNums() {
+	cnums := make([]ch2.Cint, len(nums))
+	for i, v := range nums {
+		cnums[i] = ch2.Cint(v)
+	}
+
+	var n []ch2.Comparable
+	if shuffle {
+		n = ch2.InitCint(cnums)
+	} else {
+		n = ch2.Cint2Comparable(cnums)
+	}
+
+	sorter.StartCount()
+
+	fmt.Println("befor :", n)
+	fmt.Println("after :", sorter.Sort(n))
+
+	sorter.EndCount()
+
+	comp, exch := sorter.GetCount()
+	fmt.Printf("compare : %d\texch : %d\n", comp, exch)
+}
+
 func main() {
-	nums := []ch2.Cint{1, 2, 2, 3, 4, 5, 5}
-	n := ch2.Cint2Comparable(nums)
-	s := ch2.CommonSortBase{}
-
-	s.Display(n)
-	fmt.Println(s.Sort(n))
-
-	s.Display(n)
-	fmt.Println(s.IsSorted(n))
-
-	s.Exchange(&n[0], &n[1])
-	s.Display(n)
+	sortNums()
 }
