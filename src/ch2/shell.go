@@ -16,7 +16,8 @@ func (s *Shell) Sort(l []Comparable) []Comparable {
 	for ; h >= 1; h /= 3 {
 		for i := h; i < len(l); i++ {
 			for j := i - h; j >= 0 && s.less(l[j+h], l[j]); j -= h {
-				s.exchange(&l[j+h], &l[j])
+				//s.exchange(&l[j+h], &l[j])
+				l[j], l[j+h] = l[j+h], l[j]
 			}
 		}
 	}

@@ -48,21 +48,25 @@ func (tm *TopMerge) merge(l []Comparable, left, mid, right int, sup []Comparable
 	for i < mid && j < right {
 		if tm.less(sup[j], sup[i]) {
 			l[k] = sup[j]
+			//tm.exchange(&l[k], &sup[j])
 			k++
 			j++
 		} else {
 			l[k] = sup[i]
+			//tm.exchange(&l[k],&sup[i])
 			k++
 			i++
 		}
 	}
 	for i == mid && k < right {
 		l[k] = sup[j]
+		//tm.exchange(&l[k], &sup[j])
 		k++
 		j++
 	}
 	for j == right && i < mid {
 		l[k] = sup[i]
+		//tm.exchange(&l[k], &sup[i])
 		k++
 		i++
 	}
@@ -180,7 +184,8 @@ func (tm *TopMerge3) merge3(l []Comparable, left, mid, right int, sup []Comparab
 func (tm *TopMerge3) insert(l []Comparable, left, right int) {
 	for i := left + 1; i < right; i++ {
 		for j := i - 1; j >= left && tm.less(l[j+1], l[j]); j-- {
-			tm.exchange(&l[j], &l[j+1])
+			//tm.exchange(&l[j], &l[j+1])
+			l[j], l[j+1] = l[j+1], l[j]
 		}
 	}
 }
@@ -192,5 +197,106 @@ func (tm *TopMerge3) Sort(l []Comparable) []Comparable {
 		sup[i] = v
 	}
 	tm.divide3(l, 0, len(l), sup, 0)
+	return l
+}
+
+//-------------------------------------------------------------------------
+
+func (tm *BottomMerge) merge(l []Comparable, left, mid, right int, sup []Comparable) {
+	//copy
+	for i := left; i < right; i++ {
+		sup[i] = l[i]
+	}
+	i, j, k := left, mid, left
+	for i < mid && j < right {
+		if tm.less(sup[j], sup[i]) {
+			l[k] = sup[j]
+			k++
+			j++
+		} else {
+			l[k] = sup[i]
+			k++
+			i++
+		}
+	}
+	for i == mid && k < right {
+		l[k] = sup[j]
+		k++
+		j++
+	}
+	for j == right && i < mid {
+		l[k] = sup[i]
+		k++
+		i++
+	}
+}
+
+func (tm *BottomMerge) Sort(l []Comparable) []Comparable {
+	sup := make([]Comparable, len(l))
+	k := 2
+	for ; k < 2*len(l); k *= 2 {
+		for i := 0; i < len(l)-k/2; i += k {
+			mid := i + k/2
+			r := i + k
+			if i+k > len(l) {
+				r = len(l)
+			}
+			tm.merge(l, i, mid, r, sup)
+		}
+	}
+	return l
+}
+
+//-------------------------------------------------------------------------
+
+func (tm *InplaceMerge) reverse(nums []Comparable, l, r int) {
+	for l < r-1 {
+		//tm.exchange(&nums[l], &nums[r-1])
+		tmp := nums[l]
+		nums[l] = nums[r-1]
+		nums[r-1] = tmp
+		l++
+		r--
+	}
+}
+
+func (tm *InplaceMerge) lshift(nums []Comparable, l, r, offset int) {
+	if offset == 0 {
+		return
+	}
+	tm.reverse(nums, l, l+offset)
+	tm.reverse(nums, l+offset, r)
+	tm.reverse(nums, l, r)
+}
+
+func (tm *InplaceMerge) merge(nums []Comparable, l, mid, r int) {
+	i, j, k := l, mid, 0
+	for i < j && j < r {
+		for i < j && tm.less(nums[i], nums[j]) {
+			i++
+		}
+		for j < r && tm.less(nums[j], nums[i]) {
+			j++
+			k++
+		}
+		tm.lshift(nums, i, j, j-k-i)
+		i += k
+		k = 0
+	}
+
+}
+
+func (tm *InplaceMerge) divide(nums []Comparable, l, r int) {
+	if r-l == 1 {
+		return
+	}
+	mid := l + (r-l)/2
+	tm.divide(nums, l, mid)
+	tm.divide(nums, mid, r)
+	tm.merge(nums, l, mid, r)
+}
+
+func (tm *InplaceMerge) Sort(l []Comparable) []Comparable {
+	tm.divide(l, 0, len(l))
 	return l
 }

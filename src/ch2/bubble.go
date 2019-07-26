@@ -12,7 +12,8 @@ func (b *Bubble) Sort(l []Comparable) []Comparable {
 	for i := len(l) - 1; i > 0; i-- {
 		for j := 0; j < i; j++ {
 			if b.less(l[j+1], l[j]) {
-				b.exchange(&l[j+1], &l[j])
+				//b.exchange(&l[j+1], &l[j])
+				l[j+1], l[j] = l[j], l[j+1]
 			}
 		}
 	}

@@ -18,7 +18,8 @@ func (ss *SelectionSort) Sort(l []Comparable) []Comparable {
 				index = j
 			}
 		}
-		ss.exchange(&l[i], &l[index])
+		//ss.exchange(&l[i], &l[index])
+		l[i], l[index] = l[index], l[i]
 	}
 	return l
 }

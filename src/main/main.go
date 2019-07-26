@@ -13,11 +13,13 @@ var (
 	//sorter = &ch2.Shell{}
 	//sorter = &ch2.TopMerge{}
 	//sorter = &ch2.TopMerge2{}
-	sorter = &ch2.TopMerge3{}
+	//sorter = &ch2.TopMerge3{}
+	//sorter = &ch2.BottomMerge{}
+	sorter = &ch2.InplaceMerge{}
 
 	//nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 	//nums = []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
-	nums = getRange(100)
+	nums = getRange(20)
 
 	shuffle = true
 )
@@ -67,7 +69,9 @@ var (
 	//markSort = &ch2.Shell{} //0.519s N=10000 T=100
 	//markSort = &ch2.TopMerge{} //0.320s N=10000 T=100 normal
 	//markSort = &ch2.TopMerge2{} //0.490s N=10000 T=100  allocate support memory in recursion
-	markSort = &ch2.TopMerge3{} // N=10000 T=100
+	//markSort = &ch2.TopMerge3{} // N=10000 T=100
+	//markSort = &ch2.BottomMerge{} // N=10000 T=100
+	markSort = &ch2.InplaceMerge{} // N=10000 T=100
 
 )
 
@@ -99,6 +103,6 @@ func benchMark() {
 }
 
 func main() {
-	sortNums()
-	//benchMark()
+	//sortNums()
+	benchMark()
 }

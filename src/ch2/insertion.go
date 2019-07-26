@@ -11,7 +11,8 @@ type InsertionSort struct {
 func (is *InsertionSort) Sort(l []Comparable) []Comparable {
 	for i := 1; i < len(l); i++ {
 		for j := i - 1; j >= 0 && is.less(l[j+1], l[j]); j-- {
-			is.exchange(&l[j], &l[j+1])
+			//is.exchange(&l[j], &l[j+1])
+			l[j], l[j+1] = l[j+1], l[j]
 		}
 	}
 	return l
