@@ -16,10 +16,19 @@ var (
 	sorter = &ch2.TopMerge3{}
 
 	//nums = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
-	nums = []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+	//nums = []int{10, 9, 8, 7, 6, 5, 4, 3, 2, 1}
+	nums = getRange(100)
 
 	shuffle = true
 )
+
+func getRange(n int) []int {
+	l := make([]int, n)
+	for i := range l {
+		l[i] = i + 1
+	}
+	return l
+}
 
 func sortNums() {
 	cnums := make([]ch2.Cint, len(nums))
@@ -38,12 +47,14 @@ func sortNums() {
 	sorter.StartCount()
 
 	fmt.Println("befor :", n)
-	fmt.Println("after :", sorter.Sort(n))
+	n = sorter.Sort(n)
+	fmt.Println("after :", n)
 
 	sorter.EndCount()
 
 	comp, exch := sorter.GetCount()
 	fmt.Printf("compare : %d\texchange : %d\n", comp, exch)
+	fmt.Println("isSorted : ", sorter.IsSorted(n))
 }
 
 var (
@@ -68,6 +79,7 @@ func benchMark() {
 	comNums := ch2.Cint2Comparable(cnums)
 
 	var elapse time.Duration
+	failed := 0
 	for i := 0; i < markT; i++ {
 		comNums = ch2.ShuffleComparable(comNums)
 		tmpNums := make([]ch2.Comparable, len(comNums))
@@ -76,11 +88,14 @@ func benchMark() {
 		before := time.Now()
 		markSort.Sort(tmpNums)
 		subElapse := time.Since(before)
-
 		elapse += subElapse
+		if !markSort.IsSorted(tmpNums) {
+			failed++
+		}
 	}
 
 	fmt.Println(elapse)
+	fmt.Println("failed : ", failed)
 }
 
 func main() {

@@ -11,6 +11,10 @@ type TopMerge2 struct {
 }
 
 //3 improvements for normal
+//1 数据量小时使用插入排序
+//2 merge时，如果有序直接返回
+//3 不需要每次merge时将原数组复制到辅助数组，而是每次使用某一个数组为辅助
+//2 和 3 不能共存
 type TopMerge3 struct {
 	CommonSortBase
 }
@@ -120,29 +124,34 @@ func (tm *TopMerge2) Sort(l []Comparable) []Comparable {
 //-------------------------------------------------------------------------
 
 //[l,r)
-func (tm *TopMerge3) divide3(l []Comparable, left, right int, sup []Comparable) int {
-	if right-left <= 5 {
-		tm.insert(l, left, right)
-		return 0
+func (tm *TopMerge3) divide3(l []Comparable, left, right int, sup []Comparable, count int) {
+	if right-left <= 15 {
+		if count%2 == 0 {
+			tm.insert(l, left, right)
+		} else {
+			tm.insert(sup, left, right)
+		}
+		return
+
 	}
 	mid := left + (right-left)/2
-	tm.divide3(l, left, mid, sup)
-	tm.divide3(l, mid, right, sup)
+	tm.divide3(l, left, mid, sup, count+1)
+	tm.divide3(l, mid, right, sup, count+1)
 
-	tm.merge3(l, left, mid, right, sup)
-
+	if count%2 == 0 {
+		tm.merge3(l, left, mid, right, sup) //tm.insert(sup, left, right)
+	} else {
+		tm.merge3(sup, left, mid, right, l) //tm.insert(l, left, right)
+	}
+	return
 }
+
+//sup: 部分有序数组, l: 存放结果的数组
 func (tm *TopMerge3) merge3(l []Comparable, left, mid, right int, sup []Comparable) {
-	if mid-1 >= left && !tm.less(l[mid], l[mid-1]) {
-		return
-	}
+	//if mid-1 >= left && !tm.less(l[mid], l[mid-1]) {
+	//	return
+	//}
 
-	//copy
-	for i := left; i < right; i++ {
-		sup[i] = l[i]
-	}
-
-	//compare sup and put result to l
 	i, j, k := left, mid, left
 	for i < mid && j < right {
 		if tm.less(sup[j], sup[i]) {
@@ -165,6 +174,7 @@ func (tm *TopMerge3) merge3(l []Comparable, left, mid, right int, sup []Comparab
 		k++
 		i++
 	}
+	return
 }
 
 func (tm *TopMerge3) insert(l []Comparable, left, right int) {
@@ -177,9 +187,10 @@ func (tm *TopMerge3) insert(l []Comparable, left, right int) {
 
 func (tm *TopMerge3) Sort(l []Comparable) []Comparable {
 	sup := make([]Comparable, len(l))
+	//sup复制l
 	for i, v := range l {
 		sup[i] = v
 	}
-	tm.divide3(l, 0, len(l), sup)
+	tm.divide3(l, 0, len(l), sup, 0)
 	return l
 }
